@@ -142,7 +142,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager",],
-        parameters=[{"use_sim_time": simulado}],
+#        parameters=[{"use_sim_time": simulado}],
     )
     
     robot_controller_spawner = Node(
@@ -331,12 +331,12 @@ def generate_launch_description():
 #        )
 #    )
     
-#    rviz_node_espera_cargar_joint_state_broadcaster = RegisterEventHandler(
-#        event_handler=OnProcessExit(
-#            target_action=joint_state_broadcaster_spawner,
-#            on_exit=[rviz_node],
-#        )
-#    )
+    rviz_node_espera_cargar_joint_state_broadcaster = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[rviz_node],
+        )
+    )
 #    calcular_espera_cargar_joint_state_broadcaster = RegisterEventHandler(
 #        event_handler=OnProcessExit(
 #            target_action=joint_state_broadcaster_spawner,
@@ -353,15 +353,15 @@ def generate_launch_description():
 #            condition=IfCondition(simulado),
 #        ),
 #        cargar_modelo,
-#        control_node,    ####### NO ES NECESARIO POR QUE EL COMPLEMENTO "ign_ros2_control" CARGA UN controller_manager
+        control_node,    ####### NO ES NECESARIO POR QUE EL COMPLEMENTO "ign_ros2_control" CARGA UN controller_manager
 #        static_tf, ## si especificamos origen en la etiqueta "world" del URDF, no es necesario
         robot_state_publisher_node,
-#        joint_state_broadcaster_spawner,
-        joint_state_publisher_node,
+        joint_state_broadcaster_spawner,
+#        joint_state_publisher_node,
 #        robot_controller_espera_cargar_joint_state_broadcaster,
 #        robot_hand_espera_cargar_joint_state_broadcaster,
 #        rviz_node_espera_cargar_joint_state_broadcaster,
-	rviz_node,
+#	rviz_node,
 #	comando,
 #	puente,
 #	run_move_group_node,

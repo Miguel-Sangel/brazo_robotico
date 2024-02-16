@@ -38,6 +38,17 @@
   <xacro:property name="link6_radius" value="0.01" />
   
   <xacro:property name="gripper_open_angle" value="0.06" />
+  
+  <link name="world">
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+  </link>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="world"/>
+    <child link="arm_base_link"/>
+    <!--origin xyz="0.0 0.0 0.0" rpy="0 0 -1.5707"/--> <!--  - - - - - - OJO MUCHO OJO - - - -  - - - -->
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/> <!--  - - - - - - OJO MUCHO OJO - - - -  - - - -->
+  </joint>
 	
   <link name="arm_base_link">
     <visual>
