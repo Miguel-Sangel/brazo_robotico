@@ -26,15 +26,14 @@
         <xacro:if value="$(arg dedo_mimic)">
           <param name="mimic">gripper_joint</param>
           <param name="multiplier">1</param>
-        </xacro:if>
-        <xacro:unless value="$(arg dedo_mimic)"> 
+        </xacro:if> 
         <command_interface name="position">
-          <param name="min">10</param>
-          <param name="max">1000</param>
+          <param name="min">-2.09</param>
+          <param name="max">2.09</param>
         </command_interface>
         <command_interface name="velocity">
           <param name="min">0</param>
-          <param name="max">100</param>
+          <param name="max">5000</param>
         </command_interface>
         <!--command_interface name="acceleration">
           <param name="min">-1</param>
@@ -43,7 +42,6 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <!--state_interface name="acceleration"/-->
-        </xacro:unless>
       </joint>
     </xacro:macro>
     

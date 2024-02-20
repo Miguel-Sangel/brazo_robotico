@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 1  # Hz
+    update_rate: 500  # Hz
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -25,6 +25,11 @@ Mi_posicion_controler:
     joints:
       - joint1
       - joint2
+      - joint3
+      - joint4
+      - joint5
+      - gripper_joint
+      - gripper_joint_right
 
     command_interfaces:
       - position

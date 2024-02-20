@@ -163,10 +163,10 @@ def generate_launch_description():
     joint_state_publisher_node = Node(
         package="joint_state_publisher_gui",
         executable="joint_state_publisher_gui",
-#        remappings=[(
-#         "/joint_states", "/xxxx/joint_states",
-#        ),
-#        ],
+        remappings=[(
+         "/joint_states", "/xxxx/joint_states",
+        ),
+        ],
     )
     
 #    static_tf = Node(
@@ -188,13 +188,13 @@ def generate_launch_description():
 #        ],
     )
     
-#    comando = Node(
-#        package="descripcion_robot",
+    comando = Node(
+        package="arips_arm_node",
 ##        namespace='ostras',
-#        executable="comando_J_T_C",
-#        name="comando_J_T_C",
-#        output="screen",
-#    )
+        executable="comando_J_T_C",
+        name="comando_J_T_C",
+        output="screen",
+    )
         
 #   CONEXION PUERTO SERIE PARA MICROROS (puente)        
 #    agente = ExecuteProcess(
@@ -357,12 +357,12 @@ def generate_launch_description():
 #        static_tf, ## si especificamos origen en la etiqueta "world" del URDF, no es necesario
         robot_state_publisher_node,
         joint_state_broadcaster_spawner,
-#        joint_state_publisher_node,
-#        robot_controller_espera_cargar_joint_state_broadcaster,
+        joint_state_publisher_node,
+        robot_controller_espera_cargar_joint_state_broadcaster,
 #        robot_hand_espera_cargar_joint_state_broadcaster,
-#        rviz_node_espera_cargar_joint_state_broadcaster,
+        rviz_node_espera_cargar_joint_state_broadcaster,
 #	rviz_node,
-#	comando,
+	comando,
 #	puente,
 #	run_move_group_node,
 #	calcular_espera_cargar_joint_state_broadcaster,

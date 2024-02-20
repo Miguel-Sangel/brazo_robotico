@@ -75,7 +75,7 @@ void mover(uint8_t Servo, int pos) {
     buf_p[1] = 0xFF;
     buf_p[2] = Servo; //ID
     buf_p[3] = 0x09; // Longitud
-    buf_p[4] = 0x04; // Orden escribir
+    buf_p[4] = 0x03; // Orden escribir
     buf_p[5] = 0x2A; // Dirección principal del segmento de datos escrito "posicion" 
     buf_p[6] = (pos>>8); // Byte alto (pos>>8)
     buf_p[7] = (pos&0xff); // Byte bajo - 0800 (2048) "posicion" (pos&0xff)
@@ -123,10 +123,6 @@ int main(int argc, char** argv)
   rclcpp::init(argc, argv);
   auto node = std::make_shared<rclcpp::Node>("arips_arm_node");
 
-  
-  //rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr brazo_pub = node->create_publisher<geometry_msgs::msg::Pose>("tema_pose", 1);
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr brazo_pub = node->create_publisher<std_msgs::msg::Int32>("pose", 1);
-  
   pSerial.setPort("/dev/ttyUSB0");  
    
   pSerial.setBaudrate(1000000);
@@ -154,11 +150,11 @@ int main(int argc, char** argv)
     std::cin>> posicion2;
     mover(1, posicion1);
     mover(2, posicion2);
-    int resultado = 0;
-    while( resultado < 2 ) {
-       if (leer_datos(1, 56, 2, 6, posicion1)) resultado += 1;
-       if (leer_datos(2, 56, 2, 6, posicion2)) resultado += 1;
-    }
+//    int resultado = 0;
+//    while( resultado < 2 ) {
+//       if (leer_datos(1, 56, 2, 6, posicion1)) resultado += 1;
+//       if (leer_datos(2, 56, 2, 6, posicion2)) resultado += 1;
+//    }
   }
   pSerial.close();
 }

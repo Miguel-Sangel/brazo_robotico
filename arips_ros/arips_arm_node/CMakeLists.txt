@@ -9,6 +9,11 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(trajectory_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 find_package(serial REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -29,8 +34,13 @@ endif()
 add_executable(arips_arm_node src/arips_arm_node.cpp)
 ament_target_dependencies(arips_arm_node rclcpp std_msgs serial)
 
+add_executable(comando_J_T_C src/comando_J_T_C.cpp)
+ament_target_dependencies(comando_J_T_C rclcpp sensor_msgs trajectory_msgs)
+
+
 install(TARGETS
     arips_arm_node
+    comando_J_T_C
     DESTINATION lib/${PROJECT_NAME})
 
 install(  DIRECTORY

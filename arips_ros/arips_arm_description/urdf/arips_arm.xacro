@@ -142,7 +142,7 @@
     <axis xyz="0 0 1"/>
     <origin xyz="0 0 ${link1_height}"/>
     
-    <limit effort="1000.0" lower="${-pi*0.45}" upper="${pi*0.45}" velocity="1.0"/>
+    <limit effort="1000.0" lower="-2.09" upper="2.09" velocity="500"/> <!-- 2.09 = 120 grados -->
   </joint>
 
   <joint name="joint2" type="revolute">
@@ -152,7 +152,7 @@
     <axis xyz="0 1 0"/>
     <origin xyz="0.02 0 ${link2_height}"/>
     
-    <limit effort="1000.0" lower="-0.95" upper="2.1" velocity="1.0"/>
+    <limit effort="1000.0" lower="-2.09" upper="2.09" velocity="500"/>
   </joint>
 
   <joint name="joint3" type="revolute">
