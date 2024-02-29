@@ -31,6 +31,12 @@
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 
+//---------------ESTO LO USE EN UNA PRUEBA PARA MICRO-ROS----------
+//using publi = rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr;
+//rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr ref_subscriber_ = nullptr;
+//std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("prueba_cmd");
+//rclcpp::Node node = rclcpp::Node("prueba_cmd");
+//publi s_publisher_ = node->create_publisher<sensor_msgs::msg::JointState>("/mi_mensaje_escribe", rclcpp::QoS(1).best_effort().durability_volatile());
 
 namespace ros2_control_hardware
 {
@@ -108,6 +114,12 @@ CallbackReturn Mi_Brazo_Hardware::on_init(
     }
   }
   
+//  std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("prueba_cmd");  // SOLA FUNCIONA
+//    rclcpp::Node node = rclcpp::Node("prueba_cmd");
+//  ref_subscriber_ = node->create_subscription<sensor_msgs::msg::JointState>(
+//    "/mi_mensaje_lee", 10, std::bind(&Mi_Brazo_Hardware::reference_callback, this, std::placeholders::_1));
+//  s_publisher_ = node.create_publisher<sensor_msgs::msg::JointState>("/mi_mensaje_escribe", 10);
+
   pSerial = std::make_unique<serial::Serial>();
 
   pSerial->setPort("/dev/ttyUSB0");  
@@ -330,6 +342,9 @@ hardware_interface::return_type Mi_Brazo_Hardware::read()
     }
     chec_sum = 0xFF - chec_sum;
     buf_l[7] = chec_sum; // Chec_sum byte de control
+//    printf("\n %d", chec_sum);
+
+//    printf("\n ENVIO %s - %d %d %d %d %d %d %d %d", cadena.c_str(), buf_l[0], buf_l[1], buf_l[2], buf_l[3], buf_l[4], buf_l[5], buf_l[6], buf_l[7]);
   
     pSerial->write(buf_l);
 
@@ -360,6 +375,10 @@ hardware_interface::return_type Mi_Brazo_Hardware::read()
        hw_states_velocities_[i] = 0;
     }
   }
+  //else {hw_states_positions_[i] = 0; ////////////////    SOLO POR QUE TENGO 2 MOTORES
+  //      hw_states_velocities_[i] = 0;}
+  //RCLCPP_INFO(rclcpp::get_logger("relleno "), "Posicion = %f, del servo %ld", hw_states_positions_[i], i);
+  //}
 
   return hardware_interface::return_type::OK;
 }
@@ -367,60 +386,64 @@ hardware_interface::return_type Mi_Brazo_Hardware::read()
 hardware_interface::return_type Mi_Brazo_Hardware::write()
 {
   int chec_sum = 0;
+  std::vector<uint8_t> buf_p(13);
   int pos, vel;
-  pSerial->flush ();
-  
-  int long_buf = (hw_commands_positions_.size() * 7) + 4;
-  std::vector<uint8_t> buf_p(long_buf + 4);
-  buf_p[0] = 0xFF;
-  buf_p[1] = 0xFF;
-  buf_p[2] = 0xFE;
-  buf_p[3] = long_buf; // Longitud
-  buf_p[4] = 0x83; // Orden escribir todos
-  buf_p[5] = 0x2A; // inicio escritura
-  buf_p[6] = 0x06; // longitud datos por servo
-  int ind = 7;
+  uint8_t Dat_lei[6];
+  size_t k = 6;
 
   for (std::size_t i = 0; i < hw_commands_positions_.size(); i++) // SIEMPRE LEE Y EJECUTA
   {
-    vel = hw_commands_velocities_[i];
-    buf_p[ind] = i + 1; // servo
-    if (i < 4){
+    chec_sum = 0;
+    pSerial->flush ();
+    if (i != 4)
         pos = conv_grad_a_serv(hw_commands_positions_[i], 2332);
-        buf_p[ind+1] = (pos>>8); // Byte alto (pos>>8)
-        buf_p[ind+2] = (pos&0xff); // Byte bajo - 0800 (2048) "posicion" (pos&0xff)
-        buf_p[ind+5] = (vel>>8); // Byte alto
-        buf_p[ind+6] = (vel&0xff); // Byte bajo - 03E8 (1000) "velocidad" // 0064 (100 velocida en decimal)
-    }
-    else if (i == 4){
+    else
         pos = conv_grad_a_serv(hw_commands_positions_[i], 3032);
-        buf_p[ind+2] = (pos>>8); // Byte bajo 
-        buf_p[ind+1] = (pos&0xff); // Byte alto
-        buf_p[ind+6] = (vel>>8); // Byte bajo
-        buf_p[ind+5] = (vel&0xff); // Byte alto
-    }
-    else {
-          buf_p[ind+1] = 0; // Byte alto (pos>>8)
-          buf_p[ind+2] = 0; // Byte bajo - 0800 (2048) "posicion" (pos&0xff)
-          buf_p[ind+5] = 0; // Byte alto
-          buf_p[ind+6] = 0; // Byte bajo - 03E8 (1000) "velocidad" // 0064 (100 velocida en decimal)
+    //pos = hw_commands_positions_[i];
+    vel = hw_commands_velocities_[i];
+    //RCLCPP_INFO(rclcpp::get_logger("Mandar "), "Posicion = %d, del servo %ld", pos, i);
+    buf_p[0] = 0xFF;
+    buf_p[1] = 0xFF;
+    buf_p[2] = i+1; //ID
+    buf_p[3] = 0x09; // Longitud
+    buf_p[4] = 0x03; // Orden escribir
+    buf_p[5] = 0x2A; // Dirección principal del segmento de datos escrito "posicion"
+    if (i < 4){ 
+        buf_p[6] = (pos>>8); // Byte alto (pos>>8)
+        buf_p[7] = (pos&0xff); // Byte bajo - 0800 (2048) "posicion" (pos&0xff)
+        buf_p[10] = (vel>>8); // Byte alto
+        buf_p[11] = (vel&0xff); // Byte bajo - 03E8 (1000) "velocidad" // 0064 (100 velocida en decimal)
+        }
+    else if (i == 4){
+          buf_p[7] = (pos>>8); // Byte alto (pos>>8)
+          buf_p[6] = (pos&0xff); // Byte bajo - 0800 (2048) "posicion" (pos&0xff)
+          buf_p[11] = (vel>>8); // Byte alto
+          buf_p[10] = (vel&0xff); // Byte bajo - 03E8 (1000) "velocidad" // 0064 (100 velocida en decimal)
          }
-    buf_p[ind+3] = 0x00; // "tiempo"
-    buf_p[ind+4] = 0x00; //
-    
-    ind = ind + 7;
-  }
-  for (int j = 2; j < (long_buf + 3); j++) {
+    else {
+          buf_p[6] = 0; // Byte alto (pos>>8)
+          buf_p[7] = 0; // Byte bajo - 0800 (2048) "posicion" (pos&0xff)
+          buf_p[10] = 0; // Byte alto
+          buf_p[11] = 0; // Byte bajo - 03E8 (1000) "velocidad" // 0064 (100 velocida en decimal)
+         }
+    buf_p[8] = 0x00; // "tiempo"
+    buf_p[9] = 0x00; //
+    for (int j = 2; j < 12; j++) {
        chec_sum += buf_p[j];
+    }
+    if (chec_sum > 255){
+       chec_sum = chec_sum - 256; ///////////////////// OJO 256
+    }
+    chec_sum = 255 - chec_sum;
+    buf_p[12] = chec_sum; // Chec summ
+//    printf("%d", chec_sum);
+//    printf("\n ENVIO MOVER - %d %d %d %d %d %d %d %d %d %d %d %d %d", buf_p[0], buf_p[1], buf_p[2], buf_p[3], buf_p[4], buf_p[5], buf_p[6], buf_p[7], buf_p[8], buf_p[9], buf_p[10], buf_p[11], buf_p[12]);
+
+    //if ( i < 4)               // porque tengo dos motores
+       pSerial->write(buf_p);
+
+    pSerial->read(Dat_lei, k);
   }
-  while (chec_sum > 255){
-      chec_sum = chec_sum - 256; ///////////////////// OJO 256
-  }
-  chec_sum = 255 - chec_sum;
-  buf_p[ind] = chec_sum; // Chec summ
-  
-  pSerial->write(buf_p);
-  
   return hardware_interface::return_type::OK;
 }
 
