@@ -11,6 +11,29 @@
   
   <build_depend>rclcpp</build_depend>
   <build_depend>serial</build_depend>
+  
+  <depend>yaml_cpp_vendor</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>hardware_interface</depend>
+  <depend>controller_manager</depend>
+  <depend>ament_index_cpp</depend>
+  <depend>interactive_markers</depend>
+  <depend>moveit_core</depend>
+  <!--depend>moveit_ros_planning_interface</depend-->
+  <depend>moveit_servo</depend>
+  <depend>moveit_hybrid_planning</depend>
+  <!--depend>moveit_visual_tools</depend-->
+  <depend>rviz_visual_tools</depend>
+  <depend>eigen_stl_containers</depend>
+  
+  <build_depend>eigen</build_depend>
+  <build_depend>geometric_shapes</build_depend>
+  <build_depend>moveit_common</build_depend>
+  <build_depend>moveit_ros_planning</build_depend>
+  <build_depend>moveit_ros_planning_interface</build_depend>
+  <buildtool_depend>eigen3_cmake_module</buildtool_depend>
+  <buildtool_export_depend>eigen3_cmake_module</buildtool_export_depend>
+  <build_export_depend>eigen</build_export_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

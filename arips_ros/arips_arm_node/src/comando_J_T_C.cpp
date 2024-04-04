@@ -23,6 +23,8 @@ class ObjetoComando : public rclcpp::Node
       trajectory_msgs::msg::JointTrajectory data;
       trajectory_msgs::msg::JointTrajectoryPoint punto;
       punto.positions = message.position;
+//      for (size_t i=0; i < message.name.size(); i++)
+//        { punto.accelerations[i] = 50;}
       data.header.frame_id = "prueba";
       data.joint_names = message.name;
       data.points.push_back(punto);

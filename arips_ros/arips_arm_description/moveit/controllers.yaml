@@ -1,0 +1,13 @@
+ros_control_namespace: /brazo
+controller_list:
+  - name: /brazo/arm_controller
+    action_ns: follow_joint_trajectory
+    default: True
+    type: FollowJointTrajectory
+    joints:
+     - peana_joint
+     - hombro_joint
+     - codo_1_joint
+     - codo_2_joint
+     - muneca_1_joint
+     - muneca_2_joint

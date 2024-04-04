@@ -1,0 +1,21 @@
+controller_list:
+  - name: fake_gru_brazo_controller
+    type: $(arg execution_type)
+    joints:
+      - peana_joint
+      - hombro_joint
+      - codo_1_joint
+      - codo_2_joint
+      - muneca_1_joint
+      - muneca_2_joint
+  - name: fake_gru_mano_controller
+    type: $(arg execution_type)
+    joints:
+      - muneca_1_joint
+      - muneca_2_joint
+      - dedo_1_joint
+initial:  # Define initial robot poses.
+#  - group: gru_brazo
+#    pose: home
+
+  []

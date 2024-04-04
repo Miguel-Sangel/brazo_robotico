@@ -1,0 +1,71 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 1000  # Hz
+
+    mi_brazo_controller:
+#      type: position_controllers/JointGroupPositionController
+      type: joint_trajectory_controller/JointTrajectoryController
+      
+
+    moveit_hand_controller:
+#      type: position_controllers/GripperActionController
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+joint_state_broadcaster:
+  ros__parameters:
+    use_local_topics: true    ## OJO Publica en /joint_state_broadcaster/joint_states
+
+mi_brazo_controller:
+  ros__parameters:
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    joints:
+      - peana_joint
+      - hombro_joint
+      - codo_1_joint
+      - codo_2_joint
+      - muneca_1_joint
+      - muneca_2_joint
+#      - dedo_1_joint
+#      - dedo_2_joint
+    constraints:
+      goal_time: 1.0
+      # vel_tolerance is 0 for due to the movegroup/follow_joint_trajectory/goal tolerance is empty
+      stopped_velocity_tolerance: 0.0
+      peana_joint: {trajectory: 0.2, goal: 0.1}
+      hombro_joint: {trajectory: 0.2, goal: 0.1}
+      codo_1_joint: {trajectory: 0.2, goal: 0.1}
+      codo_1_joint: {trajectory: 0.2, goal: 0.1}
+      muneca_1_joint: {trajectory: 0.2, goal: 0.1}
+      muneca_2_joint: {trajectory: 0.2, goal: 0.1}
+    state_publish_rate: 50.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: true
+    open_loop_control: false  # true sin retroalimentacion hardware
+    
+    
+    gains: # Required because we're controlling an effort interface
+      peana_joint: {p: 3000, d: 5, i: 1,   i_clamp: 3, torque_clamp: 60}
+      hombro_joint: {p: 3000, d: 5, i: 1,   i_clamp: 3, torque_clamp: 50}
+      codo_1_joint: {p: 3000, d: 5, i: 1,   i_clamp: 3, torque_clamp: 50}
+      codo_2_joint: {p: 3000, d: 5, i: 1,   i_clamp: 3, torque_clamp: 50}
+      muneca_1_joint: {p: 500,  d: 1, i: 0.1, i_clamp: 3, torque_clamp: 50}
+      muneca_2_joint: {p: 500,  d: 1, i: 0.1, i_clamp: 3, torque_clamp: 50}
+    
+
+moveit_hand_controller:
+  ros__parameters:
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    joints: 
+      - dedo_1_joint
+#      - dedo_2_joint

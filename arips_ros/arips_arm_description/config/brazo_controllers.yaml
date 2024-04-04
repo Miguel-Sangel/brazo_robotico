@@ -11,12 +11,17 @@ controller_manager:
     Mi_posicion_controler:
       type: joint_trajectory_controller/JointTrajectoryController
 
+      
+#joint_state_broadcaster:
+#  ros__parameters:
+#    use_local_topics: true    ## OJO Publica en /joint_state_broadcaster/joint_states
+
 
 forward_position_controller:
   ros__parameters:
     joints:
-      - joint1
-      - joint2
+      - gripper_joint
+      - gripper_joint_right
     interface_name: position
 
 
@@ -28,8 +33,7 @@ Mi_posicion_controler:
       - joint3
       - joint4
       - joint5
-      - gripper_joint
-      - gripper_joint_right
+      
 
     command_interfaces:
       - position
@@ -39,11 +43,12 @@ Mi_posicion_controler:
       - position
       - velocity
 
-    state_publish_rate: 200.0 # Defaults to 50
+    state_publish_rate: 100.0 # Defaults to 50
     action_monitor_rate: 20.0 # Defaults to 20
 
     allow_partial_joints_goal: false # Defaults to false
-    open_loop_control: true
+    open_loop_control: false
+    start_with_holding: true # si true comienza manteniendo pisicion
     allow_integration_in_goal_trajectories: true
     constraints:
       stopped_velocity_tolerance: 0.01 # Defaults to 0.01
